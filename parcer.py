@@ -243,50 +243,77 @@ def extract_hierarchical_paragraphs(all_headings: List[Dict], pdf_plumb, total_p
     # Сортируем заголовки по номеру страницы и позиции
     all_headings.sort(key=lambda x: (x["page_num"], x["heading_idx"]))
     
+    # Добавляем виртуальный начальный заголовок для текста до первого реального заголовка
+    if all_headings and all_headings[0]["page_num"] > 1:
+        all_headings.insert(0, {
+            "heading_id": "0",
+            "heading_title": "Начало документа",
+            "page_num": 1,
+            "heading_idx": 0,
+            "level": 0
+        })
+    
+    # Добавляем виртуальный конечный заголовок
+    all_headings.append({
+        "heading_id": "END",
+        "heading_title": "Конец документа",
+        "page_num": total_pages + 1,
+        "heading_idx": float('inf'),
+        "level": 0
+    })
+    
+    # Проходим по всем заголовкам
     for i, current_heading in enumerate(all_headings[:-1]):
-        current_id = current_heading["heading_id"]
-        current_level = len(current_id.split('.'))
-        current_prefix = '.'.join(current_id.split('.')[:current_level-1])
-        
-        # Ищем следующий заголовок
-        end_page = total_pages
-        for next_heading in all_headings[i+1:]:
-            next_id = next_heading["heading_id"]
-            next_level = len(next_id.split('.'))
-            next_prefix = '.'.join(next_id.split('.')[:next_level-1])
-            
-            # Останавливаемся если:
-            # 1. Нашли заголовок того же уровня с тем же префиксом (1.1 -> 1.2)
-            # 2. Нашли заголовок более высокого уровня (1.1.1 -> 1.2)
-            # 3. Нашли заголовок следующего уровня в той же ветке (1.1 -> 1.1.1)
-            if (next_level == current_level and next_prefix == current_prefix) or \
-               (next_level < current_level) or \
-               (next_level > current_level and next_id.startswith(current_id)):
-                end_page = next_heading["page_num"]
-                break
+        next_heading = all_headings[i + 1]
         
         # Собираем текст
         chunk_text = []
         start_page = current_heading["page_num"]
-        for pg in range(start_page, min(end_page, total_pages+1)):
+        end_page = next_heading["page_num"]
+        
+        # Добавляем заголовок в начало текста (кроме виртуального начального)
+        if current_heading["heading_id"] != "0":
+            chunk_text.append(current_heading["heading_title"])
+        
+        # Собираем текст со всех страниц между заголовками
+        for pg in range(start_page, min(end_page + 1, total_pages + 1)):
             text = pdf_plumb.pages[pg-1].extract_text()
             if text:
-                chunk_text.append(text)
+                # Если это страница с текущим заголовком, убираем его из текста
+                if pg == start_page and current_heading["heading_id"] != "0":
+                    # Находим позицию заголовка в тексте и берем текст после него
+                    title_pos = text.find(current_heading["heading_title"])
+                    if title_pos != -1:
+                        text = text[title_pos + len(current_heading["heading_title"]):].strip()
+                
+                # Если это страница со следующим заголовком, обрезаем текст до него
+                if pg == end_page and next_heading["heading_id"] != "END":
+                    title_pos = text.find(next_heading["heading_title"])
+                    if title_pos != -1:
+                        text = text[:title_pos].strip()
+                
+                if text:  # Добавляем только непустой текст
+                    chunk_text.append(text)
         
-        paragraph = "\n".join(chunk_text).strip()
-        
-        # Сохраняем
-        safe_title = "".join([c if c.isalnum() else "_" for c in current_heading["heading_title"]])[:50]
-        out_txt_name = f"{current_id}_{safe_title}.txt"
-        out_txt_path = os.path.join(output_dir, out_txt_name)
-        with open(out_txt_path, "w", encoding="utf-8") as f:
-            f.write(paragraph)
+        # Пропускаем сохранение для виртуальных заголовков если текста нет
+        if current_heading["heading_id"] not in ["0", "END"] or chunk_text:
+            paragraph = "\n".join(chunk_text).strip()
+            
+            # Сохраняем
+            safe_title = "".join([c if c.isalnum() else "_" for c in current_heading["heading_title"]])[:50]
+            out_txt_name = f"{current_heading['heading_id']}_{safe_title}.txt"
+            out_txt_path = os.path.join(output_dir, out_txt_name)
+            
+            with open(out_txt_path, "w", encoding="utf-8") as f:
+                f.write(paragraph)
 
-def collect_headings(all_pages_data: List[Dict], start_page: int) -> List[Dict]:
+def collect_headings(all_pages_data: List[Dict], start_page: int, pdf_plumb) -> List[Dict]:
     """Собирает и нормализует все заголовки из документа"""
     all_headings = []
-    seen_headings = set()  # Для проверки дубликатов
+    seen_headings = set()
+    heading_idx_counter = 0
     
+    # Собираем заголовки как раньше
     for i, page_data in enumerate(all_pages_data, start=start_page):
         page_headings = page_data.get("headings", [])
         
@@ -294,27 +321,27 @@ def collect_headings(all_pages_data: List[Dict], start_page: int) -> List[Dict]:
             heading_id = h["heading_id"]
             heading_title = h["heading_title"].strip()
             
-            # Пропускаем дубликаты
             if heading_id in seen_headings:
                 continue
                 
-            # Нормализуем ID заголовка
             parts = heading_id.split('.')
             normalized_id = '.'.join(str(int(p)) for p in parts if p.strip())
             
-            # Добавляем информацию о заголовке
+            heading_idx_counter += 1
             all_headings.append({
                 "heading_id": normalized_id,
                 "heading_title": heading_title,
                 "page_num": i,
                 "level": len(parts),
-                "parent_id": '.'.join(parts[:-1]) if len(parts) > 1 else None
+                "parent_id": '.'.join(parts[:-1]) if len(parts) > 1 else None,
+                "heading_idx": heading_idx_counter
             })
             
             seen_headings.add(heading_id)
     
-    # Сортируем по иерархии
-    all_headings.sort(key=lambda x: [int(p) for p in x["heading_id"].split('.')])
+    # Проверяем пропущенные заголовки
+    print("\nПроверяем пропущенные заголовки...")
+    all_headings = check_missing_headings(all_headings, pdf_plumb)
     
     return all_headings
 
@@ -340,6 +367,138 @@ def save_heading_content(heading: Dict, content: str, output_dir: str):
     
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(content)
+
+def check_missing_headings(headings: List[Dict], pdf_plumb) -> List[Dict]:
+    """Проверяет пропущенные заголовки и пытается их найти"""
+    all_headings = headings.copy()
+    
+    # Сначала выведем все найденные заголовки
+    print("\nНайденные заголовки:")
+    for h in all_headings:
+        print(f"{h['heading_id']}: {h['heading_title']} (стр. {h['page_num']})")
+    
+    # Группируем по уровням и проверяем пропуски
+    levels = {}
+    for h in headings:
+        parts = h["heading_id"].split('.')
+        level = len(parts)
+        parent = '.'.join(parts[:-1])
+        if parent not in levels:
+            levels[parent] = []
+        levels[parent].append(int(parts[-1]))
+    
+    # Проверяем пропуски на каждом уровне
+    for parent, numbers in levels.items():
+        numbers.sort()
+        expected = set(range(1, max(numbers) + 1))
+        missing = expected - set(numbers)
+        
+        if missing:
+            print(f"\nПроверяем пропущенные разделы для {parent if parent else 'корневого уровня'}:")
+            
+            for num in missing:
+                missing_id = f"{parent}.{num}" if parent else str(num)
+                print(f"\nИщем раздел {missing_id}...")
+                
+                # Определяем диапазон поиска
+                prev_heading = next((h for h in all_headings if h["heading_id"] < missing_id), None)
+                next_heading = next((h for h in all_headings if h["heading_id"] > missing_id), None)
+                
+                if prev_heading:
+                    print(f"Предыдущий заголовок: {prev_heading['heading_id']}: {prev_heading['heading_title']}")
+                if next_heading:
+                    print(f"Следующий заголовок: {next_heading['heading_id']}: {next_heading['heading_title']}")
+                
+                start_page = prev_heading["page_num"] if prev_heading else 1
+                end_page = next_heading["page_num"] if next_heading else len(pdf_plumb.pages)
+                
+                print(f"Ищем между страницами {start_page} и {end_page}")
+                
+                # Проверяем каждую страницу
+                for page_num in range(start_page, end_page + 1):
+                    page_text = pdf_plumb.pages[page_num-1].extract_text()
+                    print(f"Проверяем страницу {page_num}...")
+                    found_heading = verify_heading_with_gpt(missing_id, page_text, page_num)
+                    
+                    if found_heading:
+                        print(f"Найден пропущенный заголовок: {found_heading['heading_title']} на странице {page_num}")
+                        all_headings.append(found_heading)
+                        break
+                else:
+                    print(f"Заголовок {missing_id} не найден в указанном диапазоне")
+    
+    return sorted(all_headings, key=lambda x: [int(p) for p in x["heading_id"].split('.')])
+
+def verify_heading_with_gpt(heading_id: str, page_text: str, page_num: int) -> Optional[Dict]:
+    """
+    Проверяет через GPT, есть ли на странице пропущенный заголовок
+    """
+    system_msg = {
+        "role": "system",
+        "content": (
+            "Вы - эксперт по анализу технической документации. "
+            "Ваша задача - найти на странице пропущенный заголовок.\n"
+            "ПРАВИЛА ОПРЕДЕЛЕНИЯ ЗАГОЛОВКОВ:\n"
+            "1. Заголовок должен:\n"
+            "   - Начинаться с номера (например, '1.', '1.2.', '2.3.1.')\n"
+            "   - Иметь осмысленный текст после номера\n"
+            "   - Быть визуально выделен (отступы, жирный шрифт и т.д.)\n"
+            "2. Заголовок НЕ может быть:\n"
+            "   - Просто номером без текста\n"
+            "   - Частью обычного текста\n"
+            "   - Элементом списка\n"
+            "\nОтветьте строго в формате JSON:\n"
+            "{\n"
+            '  "found": true/false,\n'
+            '  "heading_title": "полный текст заголовка если found=true"\n'
+            "}"
+        )
+    }
+    
+    user_msg = {
+        "role": "user",
+        "content": (
+            f"Ищем на странице {page_num} заголовок с номером {heading_id}.\n"
+            f"Текст страницы:\n\n{page_text}"
+        )
+    }
+    
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[system_msg, user_msg],
+            max_tokens=500,
+            temperature=0  # Делаем ответы более предсказуемыми
+        )
+        
+        # Пытаемся найти JSON в ответе
+        content = resp.choices[0].message.content
+        try:
+            # Пробуем прямой парсинг
+            result = json.loads(content)
+        except json.JSONDecodeError:
+            # Ищем JSON между фигурными скобками
+            start = content.find('{')
+            end = content.rfind('}') + 1
+            if start != -1 and end > start:
+                result = json.loads(content[start:end])
+            else:
+                print(f"Не удалось распарсить ответ GPT: {content}")
+                return None
+        
+        if result.get("found"):
+            return {
+                "heading_id": heading_id,
+                "heading_title": result["heading_title"],
+                "page_num": page_num,
+                "level": len(heading_id.split('.')),
+                "heading_idx": 0
+            }
+    except Exception as e:
+        print(f"Ошибка при проверке заголовка {heading_id} на странице {page_num}: {str(e)}")
+        print(f"Ответ GPT: {resp.choices[0].message.content if 'resp' in locals() else 'нет ответа'}")
+    
+    return None
 
 def main(input_file: str, output_dir: str, start_page: int = 1, end_page: int = 10, is_docx: bool = False, dpi: int = 150):
     """
@@ -471,7 +630,7 @@ def main(input_file: str, output_dir: str, start_page: int = 1, end_page: int = 
     # 5) Извлекаем текст параграфов (между заголовками)
     print("\nИзвлекаем параграфы между заголовками...")
     # Собираем и нормализуем заголовки
-    all_headings = collect_headings(all_pages_data, start_page)
+    all_headings = collect_headings(all_pages_data, start_page, pdf_plumb)
 
     # Извлекаем текст с учетом иерархии
     extract_hierarchical_paragraphs(all_headings, pdf_plumb, total_pages, output_dir)
@@ -486,7 +645,7 @@ def main(input_file: str, output_dir: str, start_page: int = 1, end_page: int = 
     print("--------------------------------------------------")
 
 # --------------------------
-# Запуск скрипта (пример)
+# Запуск скрипта
 # --------------------------
 if __name__ == "__main__":
     # Папка с файлом для парсинга (вход)
