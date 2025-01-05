@@ -639,4 +639,4 @@ if __name__ == "__main__":
 
     input_file = os.path.join(input_folder, "Инструкция Т-108 К-10 и метанирование 2021.pdf")
     # Если DOCX, поставить is_docx=True
-    main(input_file, output_folder, start_page=4, end_page=10, is_docx=False, dpi=150)
+    main(input_file, output_folder, start_page=10, end_page=20, is_docx=False, dpi=150)
