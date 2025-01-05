@@ -234,78 +234,51 @@ def analyze_page_gpt_4o_mini(image_path: str, page_number: int) -> Dict[str, Any
     return {"headings": [], "tables": []}
 
 def extract_hierarchical_paragraphs(all_headings: List[Dict], pdf_plumb, total_pages: int, output_dir: str):
-    """
-    Извлекает текст с учетом иерархии разделов:
-    1. -> включает весь текст до 2.
-    1.1 -> включает весь текст до 1.2
-    и т.д.
-    """
     # Сортируем заголовки по номеру страницы и позиции
-    all_headings.sort(key=lambda x: (x["page_num"], x["heading_idx"]))
-    
-    # Добавляем виртуальный начальный заголовок для текста до первого реального заголовка
-    if all_headings and all_headings[0]["page_num"] > 1:
-        all_headings.insert(0, {
-            "heading_id": "0",
-            "heading_title": "Начало документа",
-            "page_num": 1,
-            "heading_idx": 0,
-            "level": 0
-        })
-    
-    # Добавляем виртуальный конечный заголовок
-    all_headings.append({
-        "heading_id": "END",
-        "heading_title": "Конец документа",
-        "page_num": total_pages + 1,
-        "heading_idx": float('inf'),
-        "level": 0
-    })
+    all_headings.sort(key=lambda x: (x["page_num"], x.get("heading_idx", 0)))
     
     # Проходим по всем заголовкам
     for i, current_heading in enumerate(all_headings[:-1]):
         next_heading = all_headings[i + 1]
-        
-        # Собираем текст
         chunk_text = []
-        start_page = current_heading["page_num"]
-        end_page = next_heading["page_num"]
         
-        # Добавляем заголовок в начало текста (кроме виртуального начального)
-        if current_heading["heading_id"] != "0":
-            chunk_text.append(current_heading["heading_title"])
-        
-        # Собираем текст со всех страниц между заголовками
-        for pg in range(start_page, min(end_page + 1, total_pages + 1)):
-            text = pdf_plumb.pages[pg-1].extract_text()
-            if text:
-                # Если это страница с текущим заголовком, убираем его из текста
-                if pg == start_page and current_heading["heading_id"] != "0":
-                    # Находим позицию заголовка в тексте и берем текст после него
-                    title_pos = text.find(current_heading["heading_title"])
-                    if title_pos != -1:
-                        text = text[title_pos + len(current_heading["heading_title"]):].strip()
-                
-                # Если это страница со следующим заголовком, обрезаем текст до него
-                if pg == end_page and next_heading["heading_id"] != "END":
-                    title_pos = text.find(next_heading["heading_title"])
-                    if title_pos != -1:
-                        text = text[:title_pos].strip()
-                
-                if text:  # Добавляем только непустой текст
-                    chunk_text.append(text)
-        
-        # Пропускаем сохранение для виртуальных заголовков если текста нет
-        if current_heading["heading_id"] not in ["0", "END"] or chunk_text:
-            paragraph = "\n".join(chunk_text).strip()
+        # Собираем текст между текущим и следующим заголовком
+        for pg in range(current_heading["page_num"], next_heading["page_num"] + 1):
+            page_text = pdf_plumb.pages[pg-1].extract_text()
             
-            # Сохраняем
-            safe_title = "".join([c if c.isalnum() else "_" for c in current_heading["heading_title"]])[:50]
-            out_txt_name = f"{current_heading['heading_id']}_{safe_title}.txt"
-            out_txt_path = os.path.join(output_dir, out_txt_name)
+            if pg == current_heading["page_num"]:
+                # На первой странице берем текст после заголовка
+                start_idx = page_text.find(current_heading["heading_title"])
+                if start_idx != -1:
+                    start_idx += len(current_heading["heading_title"])
+                    page_text = page_text[start_idx:].strip()
             
-            with open(out_txt_path, "w", encoding="utf-8") as f:
-                f.write(paragraph)
+            if pg == next_heading["page_num"]:
+                # На последней странице берем текст до следующего заголовка
+                end_idx = page_text.find(next_heading["heading_title"])
+                if end_idx != -1:
+                    page_text = page_text[:end_idx].strip()
+            
+            if page_text:
+                chunk_text.append(page_text)
+        
+        # Сохраняем текст в правильную папку
+        if chunk_text:
+            # Создаем иерархию папок
+            path_parts = current_heading["heading_id"].split('.')
+            current_path = output_dir
+            for part in path_parts:
+                current_path = os.path.join(current_path, part)
+                os.makedirs(current_path, exist_ok=True)
+            
+            # Формируем имя файла
+            heading_title = clean_filename(current_heading["heading_title"].replace(current_heading["heading_id"], "")).strip()
+            filename = f"{current_heading['heading_id']}_{heading_title}.txt"
+            filepath = os.path.join(current_path, filename)
+            
+            # Сохраняем текст
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(chunk_text))
 
 def collect_headings(all_pages_data: List[Dict], start_page: int, pdf_plumb) -> List[Dict]:
     """Собирает и нормализует все заголовки из документа"""
@@ -499,6 +472,17 @@ def verify_heading_with_gpt(heading_id: str, page_text: str, page_num: int) -> O
         print(f"Ответ GPT: {resp.choices[0].message.content if 'resp' in locals() else 'нет ответа'}")
     
     return None
+
+def clean_filename(filename: str) -> str:
+    """Очищает строку для использования в имени файла"""
+    # Убираем пробелы в начале и конце
+    filename = filename.strip()
+    # Заменяем все неалфавитные символы на подчеркивание
+    filename = "".join(c if c.isalnum() else "_" for c in filename)
+    # Убираем множественные подчеркивания
+    while "__" in filename:
+        filename = filename.replace("__", "_")
+    return filename[:50]  # Ограничиваем длину
 
 def main(input_file: str, output_dir: str, start_page: int = 1, end_page: int = 10, is_docx: bool = False, dpi: int = 150):
     """
