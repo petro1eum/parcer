@@ -1,0 +1,255 @@
+import os
+import json
+import glob
+import pandas as pd
+from typing import Dict, Any
+import pdfplumber
+from PIL import Image
+import base64
+from openai import OpenAI
+import csv
+
+# Инициализация клиента OpenAI
+client = OpenAI()
+
+def analyze_pages_connection(current_page_img: str, next_page_img: str) -> Dict[str, Any]:
+    """
+    Отправляет изображения двух страниц в GPT и просит определить, является ли
+    таблица на второй странице продолжением таблицы с первой страницы.
+    """
+    base64_current = encode_image_to_base64(current_page_img)
+    base64_next = encode_image_to_base64(next_page_img)
+
+    system_msg = {
+        'role': 'system',
+        'content': '''Верни только JSON с четырьмя полями:
+    {
+        is_continuation: true/false,  
+        table_title: Название исходной таблицы,
+        reason: Причина принятого решения,
+        same_dimensions: true/false
+    }
+
+    ПРАВИЛА определения продолжения таблицы:
+
+    1. Размерность таблиц ДОЛЖНА быть идентичной:
+    - То же количество столбцов (даже если в качестве заголовков используются цифры 1,2,3...)
+    - Если в первой таблице есть цифры-номера столбцов (1,2,3...), то во второй таблице 
+        должны быть те же номера в том же порядке
+    - Заголовки могут:
+        * Полностью отсутствовать
+        * Быть заменены на цифры
+        * Быть оригинальными
+    НО количество столбцов И нумерация (если есть) должны ТОЧНО совпадать!
+
+    2. Содержимое должно быть логически связано:
+    - Продолжается нумерация строк
+    - Или продолжается логическая последовательность данных
+
+    Дополнительные признаки (НЕ ОБЯЗАТЕЛЬНЫЕ):
+    - Текст 'Продолжение таблицы X'
+    - Или 'Продолжение' над таблицей
+
+    ВАЖНО! На второй странице НЕ ДОЛЖНО быть:
+    - Нового названия 'Таблица ...'  - это НЕ продолжение таблицы!
+    - Измененной структуры (другого количества столбцов) - это НЕ продолжение таблицы!
+    - Другой нумерации столбцов (если они пронумерованы) - это НЕ продолжение таблицы!
+
+    Если разное количество столбцов или не совпадает нумерация - это ГАРАНТИРОВАННО разные таблицы!
+
+    В поле reason укажи КОНКРЕТНУЮ причину принятого решения.
+    В поле same_dimensions укажи, совпадает ли количество столбцов И нумерация (если есть).
+
+    ВАЖНО: Верни только JSON, без лишнего текста!'''
+    }
+
+    user_msg = {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "Верни JSON с полями is_continuation, table_title, reason и same_dimensions"
+            },
+            {
+                "type": "image_url",
+                "image_url": {"url": f"data:image/png;base64,{base64_current}"},
+            },
+            {
+                "type": "image_url",
+                "image_url": {"url": f"data:image/png;base64,{base64_next}"},
+            },
+        ],
+    }
+
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[system_msg, user_msg],
+            max_tokens=150,
+        )
+        response_text = resp.choices[0].message.content.strip()
+        
+        try:
+            start = response_text.find('{')
+            end = response_text.rfind('}') + 1
+            if start != -1 and end != 0:
+                json_str = response_text[start:end]
+                json_data = json.loads(json_str)
+                # Проверяем наличие обязательных полей
+                required_fields = ['is_continuation', 'table_title', 'reason', 'same_dimensions']
+                if not all(field in json_data for field in required_fields):
+                    print(f"В ответе GPT отсутствуют обязательные поля: {response_text}")
+                    return {"is_continuation": False, "table_title": "", "reason": "Invalid response", "same_dimensions": False}
+                return json_data
+        except json.JSONDecodeError:
+            print(f"Невалидный JSON в ответе GPT: {response_text}")
+            return {"is_continuation": False, "table_title": "", "reason": "Invalid JSON", "same_dimensions": False}
+            
+    except Exception as e:
+        print(f"Ошибка при анализе страниц: {str(e)}")
+        return {"is_continuation": False, "table_title": "", "reason": str(e), "same_dimensions": False}
+
+def encode_image_to_base64(image_path: str) -> str:
+    """Кодирует изображение в base64"""
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
+
+def create_page_image(pdf_path: str, page_num: int, output_folder: str) -> str:
+    """Создает изображение страницы PDF"""
+    with pdfplumber.open(pdf_path) as pdf:
+        page = pdf.pages[page_num - 1]
+        img = page.to_image()
+        img_path = os.path.join(output_folder, f'temp_page_{page_num}.png')
+        img.save(img_path)
+        return img_path
+
+def get_page_number(filename):
+    """Извлекает номер страницы из имени файла"""
+    return int(filename.split('page_')[1].split('_')[0])
+
+def merge_connected_tables(input_folder: str, pdf_path: str):
+    """
+    Проходит по всем CSV файлов последовательно и объединяет связанные таблицы
+    """
+    print("\nНачинаем обработку CSV файлов...")
+    csv_files = glob.glob(os.path.join(input_folder, 'page_*_tables.csv'))
+    # Сортируем по номеру страницы
+    csv_files = sorted(csv_files, key=get_page_number)
+    
+    if not csv_files:
+        print("CSV файлы не найдены")
+        return
+    
+    print(f"Найдено файлов: {len(csv_files)}")
+    print("Порядок обработки файлов:")
+    for f in csv_files:
+        print(f"  Страница {get_page_number(f)}: {f}")
+    
+    temp_folder = os.path.join(input_folder, 'temp_images')
+    os.makedirs(temp_folder, exist_ok=True)
+    
+    try:
+        current_idx = 0
+        while current_idx < len(csv_files):
+            current_file = csv_files[current_idx]
+            current_page = int(current_file.split('page_')[1].split('_')[0])
+            print(f"\nПроверяем страницу {current_page} ({current_file})")
+            
+            # Начинаем собирать связанные таблицы
+            connected_files = [current_file]
+            
+            # Проверяем следующие страницы по порядку
+            next_page = current_page + 1
+            while True:
+                next_file = os.path.join(input_folder, f'page_{next_page}_tables.csv')
+                
+                # Если следующего файла нет - прерываем проверку
+                if not os.path.exists(next_file):
+                    print(f"  Файл страницы {next_page} не существует, прерываем проверку")
+                    break
+                
+                print(f"  Проверяем связь со страницей {next_page}")
+                
+                try:
+                    # Создаем изображения для проверки
+                    current_img = create_page_image(pdf_path, current_page, temp_folder)
+                    next_img = create_page_image(pdf_path, next_page, temp_folder)
+                    
+                    # Проверяем связь между страницами
+                    result = analyze_pages_connection(current_img, next_img)
+                    print(f"  Результат проверки: {result}")
+                    
+                    # Удаляем временные изображения
+                    os.remove(current_img)
+                    os.remove(next_img)
+                    
+                    if result["is_continuation"] and result["same_dimensions"]:
+                        print(f"  Страница {next_page} является продолжением")
+                        connected_files.append(next_file)
+                        current_page = next_page
+                        next_page += 1
+                    else:
+                        print(f"  Страница {next_page} НЕ является продолжением: {result['reason']}")
+                        break
+                except Exception as e:
+                    print(f"  ОШИБКА при проверке страниц {current_page} и {next_page}: {str(e)}")
+                    break
+            
+            # Если нашли связанные таблицы - объединяем их
+            if len(connected_files) > 1:
+                first_page = int(connected_files[0].split('page_')[1].split('_')[0])
+                last_page = int(connected_files[-1].split('page_')[1].split('_')[0])
+                output_file = os.path.join(input_folder, f'merged_page_{first_page}-{last_page}_tables.csv')
+                
+                print(f"\nОбъединяем таблицы со страниц {first_page}-{last_page}")
+                print(f"Файлы для объединения: {connected_files}")
+                
+                try:
+                    all_data = []
+                    first_df = pd.read_csv(connected_files[0])
+                    num_columns = len(first_df.columns)
+                    headers = first_df.columns.tolist()
+                    all_data.append(first_df)
+                    
+                    for file in connected_files[1:]:
+                        print(f"  Читаем файл: {file}")
+                        df = pd.read_csv(file, header=None, names=range(num_columns))
+                        
+                        # Проверяем количество столбцов
+                        if len(df.columns) != num_columns:
+                            raise ValueError(f"Несовпадение количества столбцов в файле {file}")
+                        
+                        # Всегда пропускаем первую строку, так как это заголовок
+                        df = df.iloc[1:]
+                        
+                        df.columns = headers
+                        all_data.append(df)
+                    
+                    result_df = pd.concat(all_data, ignore_index=True)
+                    print(f"  Итоговая таблица: {len(result_df)} строк, {len(result_df.columns)} столбцов")
+                    result_df.to_csv(output_file, index=False)
+                    print(f"  Сохранено в {output_file}")
+                    
+                except Exception as e:
+                    print(f"  ОШИБКА при объединении таблиц: {str(e)}")
+                
+                # Переходим к следующей непроверенной странице
+                current_idx = csv_files.index(connected_files[-1]) + 1
+            else:
+                print("  Нет связанных таблиц")
+                # Если связей не нашли - переходим к следующему файлу
+                current_idx += 1
+                
+    finally:
+        # Очищаем временную папку
+        if os.path.exists(temp_folder):
+            for file in os.listdir(temp_folder):
+                os.remove(os.path.join(temp_folder, file))
+            os.rmdir(temp_folder)
+        print("\nОбработка завершена")
+
+if __name__ == "__main__":
+    input_folder = "/Users/edcher/Library/CloudStorage/Box-Box/Cherednik/Angara/Technology/parcer/output"
+    pdf_path = "/Users/edcher/Library/CloudStorage/Box-Box/Cherednik/Angara/Technology/parcer/input/Инструкция Т-108 К-10 и метанирование 2021.pdf"
+    
+    merge_connected_tables(input_folder, pdf_path) 
