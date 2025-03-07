@@ -294,21 +294,39 @@ def merge_connected_tables(input_folder: str, pdf_path: str):
                     first_df = pd.read_csv(connected_files[0])
                     num_columns = len(first_df.columns)
                     headers = first_df.columns.tolist()
+                    print(f"\nПервая таблица:")
+                    print(f"  Количество столбцов: {num_columns}")
+                    print(f"  Заголовки: {headers}")
                     all_data.append(first_df)
                     
                     for file in connected_files[1:]:
-                        print(f"  Читаем файл: {file}")
+                        print(f"\nЧитаем файл: {file}")
                         df = pd.read_csv(file)
+                        print(f"  Прочитано столбцов: {len(df.columns)}")
+                        print(f"  Первые несколько строк:")
+                        print(df.head())
                         
                         # Проверяем количество столбцов
                         if len(df.columns) != num_columns:
-                            raise ValueError(f"Несовпадение количества столбцов в файле {file}")
+                            print(f"\n  НЕСОВПАДЕНИЕ СТОЛБЦОВ:")
+                            print(f"    Ожидается: {num_columns}")
+                            print(f"    Получено: {len(df.columns)}")
+                            print(f"    Пытаемся исправить через GPT...")
+                            
+                            df = fix_split_columns(df, num_columns)
+                            print(f"\n  После исправления:")
+                            print(f"    Столбцов: {len(df.columns)}")
+                            print(f"    Данные:")
+                            print(df.head())
+                            
+                            # Проверяем результат исправления
+                            if len(df.columns) != num_columns:
+                                print(f"\n  ОШИБКА: Не удалось исправить столбцы!")
+                                raise ValueError(f"Не удалось исправить несовпадение столбцов в файле {file}")
+                            else:
+                                print(f"  Столбцы успешно исправлены")
                         
-                        # Ранее мы вырезали первую строку (df.iloc[1:]),
-                        # что нередко сдвигало данные. Убираем это, чтобы 
-                        # не ломать структуру.
-                        
-                        # Присваиваем те же названия столбцов, что и в первой таблице (если нужно)
+                        # Присваиваем те же названия столбцов, что и в первой таблице
                         df.columns = headers
                         all_data.append(df)
                     
@@ -342,6 +360,75 @@ def merge_connected_tables(input_folder: str, pdf_path: str):
                 os.remove(os.path.join(temp_folder, file))
             os.rmdir(temp_folder)
         print("\nОбработка завершена")
+
+def fix_split_columns(df: pd.DataFrame, expected_columns: int) -> pd.DataFrame:
+    """
+    Пытается исправить разъехавшиеся столбцы сначала через эвристики, затем через GPT.
+    """
+    if len(df.columns) <= expected_columns:
+        return df
+        
+    # Сначала пробуем простой способ с Unnamed columns
+    unnamed_cols = [col for col in df.columns if str(col).startswith('Unnamed:')]
+    if unnamed_cols:
+        for unnamed_col in unnamed_cols:
+            cols = df.columns.tolist()
+            current_idx = cols.index(unnamed_col)
+            if current_idx > 0:
+                prev_col = cols[current_idx - 1]
+                df[prev_col] = df[prev_col].astype(str) + ' ' + df[unnamed_col].fillna('').astype(str)
+                df[prev_col] = df[prev_col].replace('nan nan', '').str.strip()
+                df = df.drop(columns=[unnamed_col])
+    
+    # Если все еще неправильное количество столбцов - используем GPT
+    if len(df.columns) != expected_columns:
+        # print(f"\n  НЕСОВПАДЕНИЕ СТОЛБЦОВ:")
+        # print(f"    Ожидается: {expected_columns}")
+        # print(f"    Получено: {len(df.columns)}")
+        # print(f"    Пытаемся исправить через GPT...")
+        
+        system_msg = {
+            "role": "system",
+            "content": """Проанализируй таблицу и верни только JSON в формате:
+{
+    "merge_columns": [
+        {
+            "columns": ["имя_столбца1", "имя_столбца2"],
+            "target_column": "имя_целевого_столбца"
+        }
+    ]
+}"""
+        }
+        
+        sample_data = df.head().to_string()
+        user_msg = {
+            "role": "user",
+            "content": f"В таблице {len(df.columns)} столбцов, нужно получить {expected_columns}.\nСтолбцы: {df.columns.tolist()}\nДанные:\n{sample_data}"
+        }
+        
+        try:
+            resp = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[system_msg, user_msg],
+                max_tokens=150,
+            )
+            fix_instructions = json.loads(resp.choices[0].message.content)
+            
+            for merge_group in fix_instructions['merge_columns']:
+                cols_to_merge = merge_group['columns']
+                target_col = merge_group['target_column']
+                print(f"  GPT предлагает объединить {cols_to_merge} в {target_col}")
+                df[target_col] = df[cols_to_merge].apply(
+                    lambda x: ' '.join(x.dropna().astype(str)).strip(), axis=1
+                )
+                for col in cols_to_merge:
+                    if col != target_col:
+                        df = df.drop(columns=[col])
+                        
+        except Exception as e:
+            print(f"  ОШИБКА при использовании GPT: {str(e)}")
+    
+    return df
 
 if __name__ == "__main__":
     input_folder = "/Users/edcher/Library/CloudStorage/Box-Box/Cherednik/Angara/Technology/parcer/output"

@@ -1,0 +1,2189 @@
+{
+  "models": [
+    {
+      "name": "Action",
+      "fields_count": 12,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 12
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bypass",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type",
+            "from_equipment",
+            "to_equipment"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CleaningMethod",
+      "fields_count": 8,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 8
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "type",
+            "description",
+            "duration_unit"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CleaningProcedure",
+      "fields_count": 14,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 14
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "equipment_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CleanlinessPassport",
+      "fields_count": 16,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 16
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "equipment_id",
+            "cleanliness_class",
+            "monitoring_regime"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ComponentProperty",
+      "fields_count": 4,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 4
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "name",
+            "unit"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Connection",
+      "fields_count": 13,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 13
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "from_id",
+            "to_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CoolingSystem",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Corrosion",
+      "fields_count": 17,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 17
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type",
+            "equipment_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Downtime",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "equipment_id",
+            "type"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Economics",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "metric_type"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EnergyEfficiency",
+      "fields_count": 16,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 16
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "energy_type"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Equipment",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Event",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Flow",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type",
+            "phase_state"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fouling",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type",
+            "equipment_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FoulingAnalysis",
+      "fields_count": 8,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 8
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "equipment_id",
+            "location"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FoulingImpactAssessment",
+      "fields_count": 7,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 7
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "equipment_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FoulingPrediction",
+      "fields_count": 6,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 6
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "equipment_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FoulingRiskAssessment",
+      "fields_count": 7,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 7
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "equipment_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Instrument",
+      "fields_count": 6,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 6
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "tag"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Maintenance",
+      "fields_count": 14,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 14
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type",
+            "category",
+            "equipment_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MaintenanceSchedule",
+      "fields_count": 5,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 5
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": []
+        }
+      ]
+    },
+    {
+      "name": "MaintenanceTask",
+      "fields_count": 9,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 9
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MaterialBalance",
+      "fields_count": 12,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 12
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "stage_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MonitoringData",
+      "fields_count": 7,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 7
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "equipment_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MonitoringParameter",
+      "fields_count": 7,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 7
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "name",
+            "unit"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Parameter",
+      "fields_count": 5,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 5
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "name",
+            "value"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PhysicalProperty",
+      "fields_count": 4,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 4
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "name",
+            "unit"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ProcessControl",
+      "fields_count": 13,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 13
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "parameter",
+            "method"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ProcessDescription",
+      "fields_count": 11,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 11
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "name"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ProcessRelationship",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "from_entity",
+            "to_entity",
+            "relationship_type"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ProcessSystem",
+      "fields_count": 13,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 13
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "name"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ProcessWaste",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type",
+            "disposal_method"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ProductSpecification",
+      "fields_count": 13,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 13
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "name"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Resource",
+      "fields_count": 13,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 13
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "name",
+            "category"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ResourceConsumption",
+      "fields_count": 15,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 15
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "resource_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ResourcePrice",
+      "fields_count": 13,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 13
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "resource_id",
+            "type"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Risk",
+      "fields_count": 14,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 14
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type",
+            "severity"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SafetyRequirement",
+      "fields_count": 13,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 13
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "category"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TechnicalDocumentation",
+      "fields_count": 14,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 14
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "type",
+            "title"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TechnologicalRegime",
+      "fields_count": 13,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 13
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "id",
+            "name"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "WasteComponent",
+      "fields_count": 4,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 4
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "name",
+            "unit"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "WasteNorm",
+      "fields_count": 6,
+      "tests": [
+        {
+          "name": "json_schema",
+          "status": "passed",
+          "fields_found": 6
+        },
+        {
+          "name": "fields_validation",
+          "status": "passed",
+          "invalid_fields": []
+        },
+        {
+          "name": "instantiation",
+          "status": "passed",
+          "required_fields": [
+            "unit",
+            "basis"
+          ]
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "ActionType",
+      "values_count": 5,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Normal operating procedures",
+              "default": "normal_procedure"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Emergency procedures",
+              "default": "emergency_procedure"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Maintenance procedures",
+              "default": "maintenance_procedure"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Preventive actions",
+              "default": "preventive_action"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Corrective actions",
+              "default": "corrective_action"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of actions"
+        }
+      ]
+    },
+    {
+      "name": "BypassType",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Process bypass",
+              "default": "process"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Safety bypass",
+              "default": "safety"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Maintenance bypass",
+              "default": "maintenance"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Startup bypass",
+              "default": "startup"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of bypass lines"
+        }
+      ]
+    },
+    {
+      "name": "CleaningType",
+      "values_count": 8,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Mechanical cleaning method",
+              "default": "mechanical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Chemical cleaning method",
+              "default": "chemical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Hydraulic cleaning method",
+              "default": "hydraulic"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Pneumatic cleaning method",
+              "default": "pneumatic"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Steam cleaning method",
+              "default": "steam"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Ultrasonic cleaning method",
+              "default": "ultrasonic"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Solvent cleaning method",
+              "default": "solvent"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Combined cleaning method",
+              "default": "combined"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of cleaning"
+        }
+      ]
+    },
+    {
+      "name": "CleanlinessClass",
+      "values_count": 3,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "High impact cleanliness class",
+              "default": "class_1"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Medium impact cleanliness class",
+              "default": "class_2"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Low impact cleanliness class",
+              "default": "class_3"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Classes of equipment cleanliness"
+        }
+      ]
+    },
+    {
+      "name": "CoolingSystemType",
+      "values_count": 3,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Open cooling system",
+              "default": "open"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Closed cooling system",
+              "default": "closed"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Hybrid cooling system",
+              "default": "hybrid"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of cooling systems"
+        }
+      ]
+    },
+    {
+      "name": "CorrosionType",
+      "values_count": 5,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Uniform corrosion",
+              "default": "uniform"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Pitting corrosion",
+              "default": "pitting"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Stress corrosion cracking",
+              "default": "stress"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Galvanic corrosion",
+              "default": "galvanic"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Erosion corrosion",
+              "default": "erosion"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of corrosion"
+        }
+      ]
+    },
+    {
+      "name": "DisposalMethod",
+      "values_count": 5,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Recycling disposal method",
+              "default": "recycling"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Landfill disposal method",
+              "default": "landfill"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Incineration disposal method",
+              "default": "incineration"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Treatment disposal method",
+              "default": "treatment"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Value recovery disposal method",
+              "default": "recovery"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Waste disposal methods"
+        }
+      ]
+    },
+    {
+      "name": "DowntimeType",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Planned downtime",
+              "default": "planned"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Unplanned downtime",
+              "default": "unplanned"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Maintenance downtime",
+              "default": "maintenance"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Emergency downtime",
+              "default": "emergency"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of equipment downtime"
+        }
+      ]
+    },
+    {
+      "name": "EconomicMetricType",
+      "values_count": 5,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Capital expenditure",
+              "default": "capex"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Operating expenditure",
+              "default": "opex"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Revenue",
+              "default": "revenue"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Profit",
+              "default": "profit"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Return on investment",
+              "default": "roi"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of economic metrics"
+        }
+      ]
+    },
+    {
+      "name": "EnergyType",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Electrical energy",
+              "default": "electrical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Thermal energy",
+              "default": "thermal"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Mechanical energy",
+              "default": "mechanical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Chemical energy",
+              "default": "chemical"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of energy"
+        }
+      ]
+    },
+    {
+      "name": "EventType",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Normal operating conditions",
+              "default": "normal_operation"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Deviation from normal operation",
+              "default": "deviation"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Emergency situation",
+              "default": "emergency"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Maintenance activities",
+              "default": "maintenance"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of events"
+        }
+      ]
+    },
+    {
+      "name": "FlowType",
+      "values_count": 5,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Process flow",
+              "default": "process"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Utility flow",
+              "default": "utility"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Product flow",
+              "default": "product"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Waste flow",
+              "default": "waste"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Recycle flow",
+              "default": "recycle"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of process flows"
+        }
+      ]
+    },
+    {
+      "name": "FoulingType",
+      "values_count": 5,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Crystallization fouling",
+              "default": "crystallization"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Particulate fouling",
+              "default": "particulate"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Biological fouling",
+              "default": "biological"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Chemical fouling",
+              "default": "chemical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Corrosion fouling",
+              "default": "corrosion"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of fouling"
+        }
+      ]
+    },
+    {
+      "name": "ImpactCategory",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Economic impact",
+              "default": "economic"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Reliability impact",
+              "default": "reliability"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Product quality impact",
+              "default": "quality"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Environmental impact",
+              "default": "environmental"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Categories of fouling impact"
+        }
+      ]
+    },
+    {
+      "name": "ImpactLevel",
+      "values_count": 3,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "High impact level",
+              "default": "high"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Medium impact level",
+              "default": "medium"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Low impact level",
+              "default": "low"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Levels of impact"
+        }
+      ]
+    },
+    {
+      "name": "KnowledgeType",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Technical and process-related knowledge",
+              "default": "technological"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Operational procedures and practices",
+              "default": "operational"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Safety-related information",
+              "default": "safety"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Relationships between entities",
+              "default": "relationship"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of knowledge in documentation"
+        }
+      ]
+    },
+    {
+      "name": "Language",
+      "values_count": 2,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Russian language",
+              "default": "russian"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "English language",
+              "default": "english"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Supported languages"
+        }
+      ]
+    },
+    {
+      "name": "MaintenanceCategory",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Mechanical maintenance",
+              "default": "mechanical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Electrical maintenance",
+              "default": "electrical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Instrumentation maintenance",
+              "default": "instrumental"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Structural maintenance",
+              "default": "structural"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Categories of maintenance"
+        }
+      ]
+    },
+    {
+      "name": "MaintenanceType",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Preventive maintenance",
+              "default": "preventive"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Corrective maintenance",
+              "default": "corrective"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Predictive maintenance",
+              "default": "predictive"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Emergency maintenance",
+              "default": "emergency"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of maintenance"
+        }
+      ]
+    },
+    {
+      "name": "MonitoringRegime",
+      "values_count": 2,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "General cleanliness monitoring regime (ОРПЧ)",
+              "default": "general"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Special cleanliness monitoring regime (СРПЧ)",
+              "default": "special"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of monitoring regimes"
+        }
+      ]
+    },
+    {
+      "name": "PhaseState",
+      "values_count": 5,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Gas phase state",
+              "default": "gas"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Liquid phase state",
+              "default": "liquid"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Solid phase state",
+              "default": "solid"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Slurry phase state",
+              "default": "slurry"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Multiphase system",
+              "default": "multiphase"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Physical state of flows"
+        }
+      ]
+    },
+    {
+      "name": "PriceType",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Contract price",
+              "default": "contract"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Market price",
+              "default": "market"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Estimated price",
+              "default": "estimated"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Historical price",
+              "default": "historical"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of resource pricing"
+        }
+      ]
+    },
+    {
+      "name": "ResourceCategory",
+      "values_count": 5,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Raw materials",
+              "default": "raw"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Catalysts",
+              "default": "catalyst"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Chemical reagents",
+              "default": "chemical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Utilities",
+              "default": "utility"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Consumable materials",
+              "default": "consumable"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Categories of resources"
+        }
+      ]
+    },
+    {
+      "name": "RiskSeverity",
+      "values_count": 4,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Low severity risk",
+              "default": "low"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Medium severity risk",
+              "default": "medium"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "High severity risk",
+              "default": "high"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Critical severity risk",
+              "default": "critical"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Risk severity levels"
+        }
+      ]
+    },
+    {
+      "name": "RiskType",
+      "values_count": 5,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Mechanical-related risks",
+              "default": "mechanical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Chemical-related risks",
+              "default": "chemical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Process-related risks",
+              "default": "process"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Environmental risks",
+              "default": "environmental"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Safety-related risks",
+              "default": "safety"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of risks"
+        }
+      ]
+    },
+    {
+      "name": "WasteType",
+      "values_count": 6,
+      "tests": [
+        {
+          "name": "values",
+          "status": "passed",
+          "values": [
+            {
+              "type": "None",
+              "required": false,
+              "description": "Solid waste",
+              "default": "solid"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Liquid waste",
+              "default": "liquid"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Gaseous emissions",
+              "default": "gas"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Spent catalysts",
+              "default": "catalyst"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Chemical waste",
+              "default": "chemical"
+            },
+            {
+              "type": "None",
+              "required": false,
+              "description": "Biological waste",
+              "default": "biological"
+            }
+          ]
+        },
+        {
+          "name": "documentation",
+          "status": "passed",
+          "doc": "Types of waste"
+        }
+      ]
+    }
+  ]
+}
